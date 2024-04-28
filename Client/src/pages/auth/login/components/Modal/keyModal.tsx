@@ -1,0 +1,117 @@
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
+import { useState } from "react";
+import { useAuth } from "../../../../../context/authContext";
+import { Backdrop, TextField } from "@mui/material";
+
+interface KeyModalProps {
+  open: boolean;
+  onClose: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  secretKey: any; // Secret key to display
+}
+
+const KeyModal: React.FC<KeyModalProps> = ({ open, onClose, secretKey }) => {
+  const { validate2FA } = useAuth();
+  const [validateCode, setValidateCode] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleSubmit = async () => {
+    try {
+      const isValid = await validate2FA({ validateCode: validateCode }); // Kullanıcı tarafından girilen kodu validate2FA fonksiyonu ile doğrula
+      if (isValid) {
+        // Eğer doğrulama başarılı ise modalı kapat
+        onClose();
+      } else {
+        setErrorMessage("Invalid authentication code"); // Geçersiz kod hatası mesajını göster
+      }
+    } catch (error) {
+      console.error("Error validating code:", error);
+      setErrorMessage("An error occurred while validating the code");
+    }
+  };
+
+  const handleCopyKey = () => {
+    navigator.clipboard.writeText(secretKey.secret);
+  };
+
+  return (
+    <Modal
+      component="div"
+      open={open}
+      onClose={onClose}
+      BackdropComponent={Backdrop}
+      BackdropProps={{ onClick: () => {} }}
+      aria-labelledby="key-modal"
+      aria-describedby="key-modal-description"
+    >
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          maxWidth: "80vw",
+          bgcolor: "background.paper",
+          boxShadow: 24,
+          p: 4,
+          borderRadius: 4,
+          textAlign: "center",
+        }}
+      >
+        <Typography variant="body2" sx={{ mb: 2, fontStyle: "italic" }}>
+          Use this key along with an application like Google Authenticator to
+          generate your login codes.
+        </Typography>
+        <Typography variant="h6" sx={{ mb: 2 }}>
+          Secret Key:
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{ mb: 2, fontWeight: "bold", color: "primary.dark" }}
+        >
+          {secretKey.secret}
+        </Typography>
+        <Button
+          onClick={handleCopyKey}
+          variant="outlined"
+          color="primary"
+          startIcon={<FileCopyIcon />}
+          sx={{ mb: 2 }}
+        >
+          Copy
+        </Button>
+        <TextField
+          label="Authentication Code"
+          value={validateCode}
+          onChange={(e) => setValidateCode(e.target.value)}
+          variant="outlined"
+          fullWidth
+          sx={{ mb: 2 }}
+        />
+        <Button
+          onClick={handleSubmit}
+          variant="contained"
+          color="primary"
+          fullWidth
+          sx={{ mb: 2 }}
+        >
+          Validate
+        </Button>
+        <Button onClick={onClose} variant="contained" color="primary" fullWidth>
+          Close
+        </Button>
+        {errorMessage && (
+          <Typography variant="body2" color="error" sx={{ mt: 2 }}>
+            {errorMessage}
+          </Typography>
+        )}
+      </Box>
+    </Modal>
+  );
+};
+
+export default KeyModal;
