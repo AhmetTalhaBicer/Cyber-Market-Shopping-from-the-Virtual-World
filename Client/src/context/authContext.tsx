@@ -130,6 +130,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       try {
         const response = await postLoginGoogle();
         const data = response.data;
+        console.log("data", data);
         if (data.success) {
           setIsAuthenticated(true);
           console.log("Google login successful");
