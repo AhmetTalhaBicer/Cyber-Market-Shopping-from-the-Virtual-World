@@ -17,15 +17,18 @@ export class CategoryService {
     private categoryRepository: Repository<Category>,
   ) {}
 
+  // Create a new category
   async create(createCategoryDto: CreateCategoryDto) {
     const newCategory = this.categoryRepository.create(createCategoryDto);
     return await this.categoryRepository.save(newCategory);
   }
 
+  // Get all categories
   async findAll(): Promise<Category[]> {
     return await this.categoryRepository.find();
   }
 
+  // Get a category by id
   async findById(category_id: number): Promise<Category> {
     const category = await this.categoryRepository.findOne({
       where: { category_id },
@@ -36,6 +39,7 @@ export class CategoryService {
     return category;
   }
 
+  // Update a category
   async update(category_id: number, updateCategoryDto: UpdateCategoryDto) {
     const updateResult = await this.categoryRepository.update(
       category_id,
@@ -47,6 +51,7 @@ export class CategoryService {
     return updateResult;
   }
 
+  // Delete a category
   async remove(category_id: number) {
     const deleteResult = await this.categoryRepository.delete(category_id);
     if (deleteResult.affected === 0) {
@@ -54,14 +59,37 @@ export class CategoryService {
     }
     return deleteResult;
   }
+
+  //Delete all categories
+  async removeAll() {
+    return await this.categoryRepository.delete({});
+  }
 }
 
 @Injectable()
 export class CategoryValidationPipe implements PipeTransform {
-  transform(value: any) {
-    if (!value.name) {
-      throw new BadRequestException('Category name is required');
-    }
+  constructor(private categoryService: CategoryService) {}
+
+  async transform(value: any) {
+    const requiredFields = ['name', 'image_url'];
+
+    const fieldTypes = {
+      name: 'string',
+      image_url: 'string',
+    };
+
+    requiredFields.forEach((field) => {
+      if (!value[field]) {
+        throw new BadRequestException(`${field} is required`);
+      }
+
+      if (typeof value[field] !== fieldTypes[field]) {
+        throw new BadRequestException(
+          `${field} must be a ${fieldTypes[field]}`,
+        );
+      }
+    });
+
     return value;
   }
 }

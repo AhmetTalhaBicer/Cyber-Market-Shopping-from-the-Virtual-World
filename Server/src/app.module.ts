@@ -7,7 +7,7 @@ import { AppConfig, DatabaseConfig } from './config';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { CategoryModule } from './modules/category/category.module';
-import { ProductModule } from './product/product.module';
+import { ProductModule } from './modules/product/product.module';
 
 @Module({
   imports: [

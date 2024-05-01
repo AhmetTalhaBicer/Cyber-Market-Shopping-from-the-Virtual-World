@@ -19,6 +19,7 @@ import { HttpExceptionFilter } from 'src/utils/HttpExceptionFilter';
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
+  // Create a new category
   @Post()
   @ApiOperation({
     summary: 'Create category',
@@ -31,28 +32,46 @@ export class CategoryController {
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @UseFilters(new HttpExceptionFilter())
   async create(@Body() createCategoryDto: CreateCategoryDto) {
-    const newCategory = await this.categoryService.create(createCategoryDto);
-    return {
-      success: true,
-      message: 'Category created successfully',
-      category: newCategory,
-    };
+    try {
+      const newCategory = await this.categoryService.create(createCategoryDto);
+      return {
+        success: true,
+        message: 'Category created successfully',
+        category: newCategory,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Failed to create category',
+        error: error.message,
+      };
+    }
   }
-
+  // Get all categories
   @Get()
   @ApiOperation({ summary: 'Get all categories' })
   @ApiResponse({ status: 200, description: 'Return all categories.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
+  @ApiResponse({ status: 500, description: 'Internal Server Error.' })
   @UseFilters(new HttpExceptionFilter())
   async findAll() {
-    const category = await this.categoryService.findAll();
-    return {
-      success: true,
-      message: 'All categories retrieved successfully.',
-      category,
-    };
+    try {
+      const categories = await this.categoryService.findAll();
+      return {
+        success: true,
+        message: 'All categories retrieved successfully.',
+        categories,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Failed to retrieve categories',
+        error: error.message,
+      };
+    }
   }
 
+  // Get category by id
   @Get(':id')
   @ApiOperation({ summary: 'Get category by id' })
   @ApiParam({
@@ -61,17 +80,28 @@ export class CategoryController {
     description: 'id of category to find',
   })
   @ApiResponse({ status: 200, description: 'Return the category.' })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 404, description: 'Not Found.' })
+  @ApiResponse({ status: 500, description: 'Internal Server Error.' })
   @UseFilters(new HttpExceptionFilter())
   async findById(@Param('id') id: number) {
-    const category = await this.categoryService.findById(id);
-    return {
-      success: true,
-      message: 'Category retrieved successfully.',
-      category,
-    };
+    try {
+      const category = await this.categoryService.findById(id);
+      return {
+        success: true,
+        message: 'Category retrieved successfully.',
+        category,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Failed to retrieve category',
+        error: error.message,
+      };
+    }
   }
 
+  // Update category
   @Patch(':id')
   @ApiOperation({ summary: 'Update category' })
   @ApiParam({
@@ -89,17 +119,26 @@ export class CategoryController {
     @Param('id') id: number,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
-    const updatedCategory = await this.categoryService.update(
-      id,
-      updateCategoryDto,
-    );
-    return {
-      success: true,
-      message: 'Category updated successfully',
-      category: updatedCategory,
-    };
+    try {
+      const updatedCategory = await this.categoryService.update(
+        id,
+        updateCategoryDto,
+      );
+      return {
+        success: true,
+        message: 'Category updated successfully',
+        category: updatedCategory,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Failed to update category',
+        error: error.message,
+      };
+    }
   }
 
+  // Delete category
   @Delete(':id')
   @ApiOperation({ summary: 'Delete category' })
   @ApiParam({
@@ -114,10 +153,44 @@ export class CategoryController {
   @ApiResponse({ status: 404, description: 'Not Found.' })
   @UseFilters(new HttpExceptionFilter())
   async remove(@Param('id') id: number) {
-    await this.categoryService.remove(id);
-    return {
-      success: true,
-      message: 'Category deleted successfully',
-    };
+    try {
+      const deletedCategory = await this.categoryService.remove(id);
+      return {
+        success: true,
+        message: 'Category deleted successfully',
+        category: deletedCategory,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Failed to delete category',
+        error: error.message,
+      };
+    }
+  }
+
+  // Delete all categories
+  @Delete()
+  @ApiOperation({ summary: 'Delete all categories' })
+  @ApiResponse({
+    status: 200,
+    description: 'All categories have been successfully deleted.',
+  })
+  @UseFilters(new HttpExceptionFilter())
+  async removeAll() {
+    try {
+      const deletedCategories = await this.categoryService.removeAll();
+      return {
+        success: true,
+        message: 'All categories deleted successfully',
+        categories: deletedCategories,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Failed to delete categories',
+        error: error.message,
+      };
+    }
   }
 }
