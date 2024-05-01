@@ -194,9 +194,9 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core_1 = __webpack_require__(4);
 const app_module_1 = __webpack_require__(5);
 const common_1 = __webpack_require__(6);
-const swagger_1 = __webpack_require__(30);
+const swagger_1 = __webpack_require__(28);
 const config_1 = __webpack_require__(12);
-const helmet_1 = __webpack_require__(40);
+const helmet_1 = __webpack_require__(52);
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule, { cors: true });
     app.useGlobalPipes(new common_1.ValidationPipe());
@@ -248,6 +248,8 @@ const config_1 = __webpack_require__(12);
 const config_2 = __webpack_require__(13);
 const auth_module_1 = __webpack_require__(16);
 const users_module_1 = __webpack_require__(33);
+const category_module_1 = __webpack_require__(40);
+const product_module_1 = __webpack_require__(47);
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -268,6 +270,8 @@ exports.AppModule = AppModule = __decorate([
             }),
             auth_module_1.AuthModule,
             users_module_1.UsersModule,
+            category_module_1.CategoryModule,
+            product_module_1.ProductModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
@@ -528,8 +532,8 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AuthController = void 0;
 const common_1 = __webpack_require__(6);
 const auth_service_1 = __webpack_require__(18);
-const login_dto_1 = __webpack_require__(29);
-const swagger_1 = __webpack_require__(30);
+const login_dto_1 = __webpack_require__(30);
+const swagger_1 = __webpack_require__(28);
 const users_service_1 = __webpack_require__(20);
 const create_user_dto_1 = __webpack_require__(31);
 const validate_token_dto_1 = __webpack_require__(32);
@@ -913,6 +917,14 @@ let UsersService = class UsersService {
             throw new common_1.InternalServerErrorException('User deletion failed');
         }
     }
+    async deleteAllUsers() {
+        try {
+            await this.userRepository.delete({});
+        }
+        catch (error) {
+            throw new common_1.InternalServerErrorException('Failed to delete users');
+        }
+    }
     async updateSecretKey(userId, secret) {
         return this.userRepository.update({ id: userId }, {
             twoFASecret: secret,
@@ -1014,7 +1026,7 @@ __decorate([
     __metadata("design:type", String)
 ], Users.prototype, "googleId", void 0);
 exports.Users = Users = __decorate([
-    (0, typeorm_1.Entity)('users')
+    (0, typeorm_1.Entity)('Users')
 ], Users);
 
 
@@ -1063,27 +1075,32 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CreateGoogleUserDTO = void 0;
-const class_validator_1 = __webpack_require__(28);
+const swagger_1 = __webpack_require__(28);
+const class_validator_1 = __webpack_require__(29);
 class CreateGoogleUserDTO {
 }
 exports.CreateGoogleUserDTO = CreateGoogleUserDTO;
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateGoogleUserDTO.prototype, "googleId", void 0);
 __decorate([
     (0, class_validator_1.IsEmail)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateGoogleUserDTO.prototype, "email", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateGoogleUserDTO.prototype, "firstName", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateGoogleUserDTO.prototype, "lastName", void 0);
 
@@ -1093,10 +1110,17 @@ __decorate([
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("class-validator");
+module.exports = require("@nestjs/swagger");
 
 /***/ }),
 /* 29 */
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("class-validator");
+
+/***/ }),
+/* 30 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1112,28 +1136,24 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.LoginDTO = void 0;
-const class_validator_1 = __webpack_require__(28);
+const swagger_1 = __webpack_require__(28);
+const class_validator_1 = __webpack_require__(29);
 class LoginDTO {
 }
 exports.LoginDTO = LoginDTO;
 __decorate([
     (0, class_validator_1.IsEmail)(),
     (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], LoginDTO.prototype, "email", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], LoginDTO.prototype, "password", void 0);
 
-
-/***/ }),
-/* 30 */
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("@nestjs/swagger");
 
 /***/ }),
 /* 31 */
@@ -1152,28 +1172,33 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CreateUserDTO = void 0;
-const class_validator_1 = __webpack_require__(28);
+const swagger_1 = __webpack_require__(28);
+const class_validator_1 = __webpack_require__(29);
 class CreateUserDTO {
 }
 exports.CreateUserDTO = CreateUserDTO;
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateUserDTO.prototype, "firstName", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateUserDTO.prototype, "lastName", void 0);
 __decorate([
     (0, class_validator_1.IsEmail)(),
     (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateUserDTO.prototype, "email", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateUserDTO.prototype, "password", void 0);
 
@@ -1195,13 +1220,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ValidateTokenDTO = void 0;
-const class_validator_1 = __webpack_require__(28);
+const swagger_1 = __webpack_require__(28);
+const class_validator_1 = __webpack_require__(29);
 class ValidateTokenDTO {
 }
 exports.ValidateTokenDTO = ValidateTokenDTO;
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], ValidateTokenDTO.prototype, "token", void 0);
 
@@ -1256,12 +1283,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var _a, _b, _c, _d, _e, _f;
+var _a, _b, _c, _d, _e, _f, _g;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.UsersController = void 0;
 const common_1 = __webpack_require__(6);
 const users_service_1 = __webpack_require__(20);
-const swagger_1 = __webpack_require__(30);
+const swagger_1 = __webpack_require__(28);
 const users_entity_1 = __webpack_require__(22);
 const update_user_dto_1 = __webpack_require__(35);
 let UsersController = class UsersController {
@@ -1322,6 +1349,21 @@ let UsersController = class UsersController {
             return {
                 success: true,
                 message: 'User deleted successfully.',
+            };
+        }
+        catch (error) {
+            return {
+                success: false,
+                message: error.message,
+            };
+        }
+    }
+    async deleteAll() {
+        try {
+            await this.usersService.deleteAllUsers();
+            return {
+                success: true,
+                message: 'All users deleted successfully.',
             };
         }
         catch (error) {
@@ -1397,6 +1439,17 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", typeof (_f = typeof Promise !== "undefined" && Promise) === "function" ? _f : Object)
 ], UsersController.prototype, "delete", null);
+__decorate([
+    (0, common_1.Delete)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Delete all users' }),
+    (0, swagger_1.ApiResponse)({
+        status: common_1.HttpStatus.NO_CONTENT,
+        description: 'All users deleted successfully.',
+    }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", typeof (_g = typeof Promise !== "undefined" && Promise) === "function" ? _g : Object)
+], UsersController.prototype, "deleteAll", null);
 exports.UsersController = UsersController = __decorate([
     (0, common_1.Controller)('users'),
     (0, swagger_1.ApiTags)('users'),
@@ -1422,8 +1475,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.UpdateUserDto = void 0;
 const mapped_types_1 = __webpack_require__(36);
-const class_validator_1 = __webpack_require__(28);
+const class_validator_1 = __webpack_require__(29);
 const create_user_dto_1 = __webpack_require__(31);
+const swagger_1 = __webpack_require__(28);
 class UpdateUserDto extends (0, mapped_types_1.PartialType)(create_user_dto_1.CreateUserDTO) {
 }
 exports.UpdateUserDto = UpdateUserDto;
@@ -1431,24 +1485,28 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], UpdateUserDto.prototype, "firstName", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], UpdateUserDto.prototype, "lastName", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsEmail)(),
     (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], UpdateUserDto.prototype, "email", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], UpdateUserDto.prototype, "password", void 0);
 
@@ -1520,6 +1578,604 @@ module.exports = require("dotenv");
 
 /***/ }),
 /* 40 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CategoryModule = void 0;
+const common_1 = __webpack_require__(6);
+const category_service_1 = __webpack_require__(41);
+const category_controller_1 = __webpack_require__(43);
+const typeorm_1 = __webpack_require__(11);
+const category_entity_1 = __webpack_require__(42);
+let CategoryModule = class CategoryModule {
+};
+exports.CategoryModule = CategoryModule;
+exports.CategoryModule = CategoryModule = __decorate([
+    (0, common_1.Module)({
+        imports: [typeorm_1.TypeOrmModule.forFeature([category_entity_1.Category])],
+        controllers: [category_controller_1.CategoryController],
+        providers: [category_service_1.CategoryService],
+        exports: [category_service_1.CategoryService],
+    })
+], CategoryModule);
+
+
+/***/ }),
+/* 41 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CategoryValidationPipe = exports.CategoryService = void 0;
+const common_1 = __webpack_require__(6);
+const typeorm_1 = __webpack_require__(11);
+const typeorm_2 = __webpack_require__(21);
+const category_entity_1 = __webpack_require__(42);
+let CategoryService = class CategoryService {
+    constructor(categoryRepository) {
+        this.categoryRepository = categoryRepository;
+    }
+    async create(createCategoryDto) {
+        const newCategory = this.categoryRepository.create(createCategoryDto);
+        return await this.categoryRepository.save(newCategory);
+    }
+    async findAll() {
+        return await this.categoryRepository.find();
+    }
+    async findById(category_id) {
+        const category = await this.categoryRepository.findOne({
+            where: { category_id },
+        });
+        if (!category) {
+            throw new common_1.NotFoundException(`Category with id ${category_id} not found`);
+        }
+        return category;
+    }
+    async update(category_id, updateCategoryDto) {
+        const updateResult = await this.categoryRepository.update(category_id, updateCategoryDto);
+        if (updateResult.affected === 0) {
+            throw new common_1.NotFoundException(`Category with id ${category_id} not found`);
+        }
+        return updateResult;
+    }
+    async remove(category_id) {
+        const deleteResult = await this.categoryRepository.delete(category_id);
+        if (deleteResult.affected === 0) {
+            throw new common_1.NotFoundException(`Category with id ${category_id} not found`);
+        }
+        return deleteResult;
+    }
+};
+exports.CategoryService = CategoryService;
+exports.CategoryService = CategoryService = __decorate([
+    (0, common_1.Injectable)(),
+    __param(0, (0, typeorm_1.InjectRepository)(category_entity_1.Category)),
+    __metadata("design:paramtypes", [typeof (_a = typeof typeorm_2.Repository !== "undefined" && typeorm_2.Repository) === "function" ? _a : Object])
+], CategoryService);
+let CategoryValidationPipe = class CategoryValidationPipe {
+    transform(value) {
+        if (!value.name) {
+            throw new common_1.BadRequestException('Category name is required');
+        }
+        return value;
+    }
+};
+exports.CategoryValidationPipe = CategoryValidationPipe;
+exports.CategoryValidationPipe = CategoryValidationPipe = __decorate([
+    (0, common_1.Injectable)()
+], CategoryValidationPipe);
+
+
+/***/ }),
+/* 42 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Category = void 0;
+const typeorm_1 = __webpack_require__(21);
+let Category = class Category {
+};
+exports.Category = Category;
+__decorate([
+    (0, typeorm_1.PrimaryGeneratedColumn)(),
+    __metadata("design:type", Number)
+], Category.prototype, "category_id", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Category.prototype, "name", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Category.prototype, "image_url", void 0);
+exports.Category = Category = __decorate([
+    (0, typeorm_1.Entity)('Category')
+], Category);
+
+
+/***/ }),
+/* 43 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var _a, _b, _c;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CategoryController = void 0;
+const common_1 = __webpack_require__(6);
+const swagger_1 = __webpack_require__(28);
+const category_service_1 = __webpack_require__(41);
+const create_category_dto_1 = __webpack_require__(44);
+const update_category_dto_1 = __webpack_require__(45);
+const HttpExceptionFilter_1 = __webpack_require__(46);
+let CategoryController = class CategoryController {
+    constructor(categoryService) {
+        this.categoryService = categoryService;
+    }
+    async create(createCategoryDto) {
+        const newCategory = await this.categoryService.create(createCategoryDto);
+        return {
+            success: true,
+            message: 'Category created successfully',
+            category: newCategory,
+        };
+    }
+    async findAll() {
+        const category = await this.categoryService.findAll();
+        return {
+            success: true,
+            message: 'All categories retrieved successfully.',
+            category,
+        };
+    }
+    async findById(id) {
+        const category = await this.categoryService.findById(id);
+        return {
+            success: true,
+            message: 'Category retrieved successfully.',
+            category,
+        };
+    }
+    async update(id, updateCategoryDto) {
+        const updatedCategory = await this.categoryService.update(id, updateCategoryDto);
+        return {
+            success: true,
+            message: 'Category updated successfully',
+            category: updatedCategory,
+        };
+    }
+    async remove(id) {
+        await this.categoryService.remove(id);
+        return {
+            success: true,
+            message: 'Category deleted successfully',
+        };
+    }
+};
+exports.CategoryController = CategoryController;
+__decorate([
+    (0, common_1.Post)(),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Create category',
+        description: 'Create a new category',
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 201,
+        description: 'The category has been successfully created.',
+    }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad Request.' }),
+    (0, common_1.UseFilters)(new HttpExceptionFilter_1.HttpExceptionFilter()),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [typeof (_b = typeof create_category_dto_1.CreateCategoryDto !== "undefined" && create_category_dto_1.CreateCategoryDto) === "function" ? _b : Object]),
+    __metadata("design:returntype", Promise)
+], CategoryController.prototype, "create", null);
+__decorate([
+    (0, common_1.Get)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Get all categories' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Return all categories.' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad Request.' }),
+    (0, common_1.UseFilters)(new HttpExceptionFilter_1.HttpExceptionFilter()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], CategoryController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get category by id' }),
+    (0, swagger_1.ApiParam)({
+        name: 'id',
+        required: true,
+        description: 'id of category to find',
+    }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Return the category.' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Not Found.' }),
+    (0, common_1.UseFilters)(new HttpExceptionFilter_1.HttpExceptionFilter()),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], CategoryController.prototype, "findById", null);
+__decorate([
+    (0, common_1.Patch)(':id'),
+    (0, swagger_1.ApiOperation)({ summary: 'Update category' }),
+    (0, swagger_1.ApiParam)({
+        name: 'id',
+        required: true,
+        description: 'id of category to update',
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'The category has been successfully updated.',
+    }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad Request.' }),
+    (0, common_1.UseFilters)(new HttpExceptionFilter_1.HttpExceptionFilter()),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, typeof (_c = typeof update_category_dto_1.UpdateCategoryDto !== "undefined" && update_category_dto_1.UpdateCategoryDto) === "function" ? _c : Object]),
+    __metadata("design:returntype", Promise)
+], CategoryController.prototype, "update", null);
+__decorate([
+    (0, common_1.Delete)(':id'),
+    (0, swagger_1.ApiOperation)({ summary: 'Delete category' }),
+    (0, swagger_1.ApiParam)({
+        name: 'id',
+        required: true,
+        description: 'id of category to delete',
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'The category has been successfully deleted.',
+    }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Not Found.' }),
+    (0, common_1.UseFilters)(new HttpExceptionFilter_1.HttpExceptionFilter()),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], CategoryController.prototype, "remove", null);
+exports.CategoryController = CategoryController = __decorate([
+    (0, swagger_1.ApiTags)('category'),
+    (0, common_1.Controller)('category'),
+    __metadata("design:paramtypes", [typeof (_a = typeof category_service_1.CategoryService !== "undefined" && category_service_1.CategoryService) === "function" ? _a : Object])
+], CategoryController);
+
+
+/***/ }),
+/* 44 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CreateCategoryDto = void 0;
+const swagger_1 = __webpack_require__(28);
+const class_validator_1 = __webpack_require__(29);
+class CreateCategoryDto {
+}
+exports.CreateCategoryDto = CreateCategoryDto;
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", String)
+], CreateCategoryDto.prototype, "name", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateCategoryDto.prototype, "image_url", void 0);
+
+
+/***/ }),
+/* 45 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.UpdateCategoryDto = void 0;
+const swagger_1 = __webpack_require__(28);
+const create_category_dto_1 = __webpack_require__(44);
+const class_validator_1 = __webpack_require__(29);
+class UpdateCategoryDto extends (0, swagger_1.PartialType)(create_category_dto_1.CreateCategoryDto) {
+}
+exports.UpdateCategoryDto = UpdateCategoryDto;
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", String)
+], UpdateCategoryDto.prototype, "name", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", String)
+], UpdateCategoryDto.prototype, "image_url", void 0);
+
+
+/***/ }),
+/* 46 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.HttpExceptionFilter = void 0;
+const common_1 = __webpack_require__(6);
+let HttpExceptionFilter = class HttpExceptionFilter {
+    catch(exception, host) {
+        const ctx = host.switchToHttp();
+        const response = ctx.getResponse();
+        const request = ctx.getRequest();
+        const status = exception.getStatus();
+        response.status(status).json({
+            statusCode: status,
+            timestamp: new Date().toISOString(),
+            path: request.url,
+        });
+    }
+};
+exports.HttpExceptionFilter = HttpExceptionFilter;
+exports.HttpExceptionFilter = HttpExceptionFilter = __decorate([
+    (0, common_1.Catch)(common_1.HttpException)
+], HttpExceptionFilter);
+
+
+/***/ }),
+/* 47 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ProductModule = void 0;
+const common_1 = __webpack_require__(6);
+const product_service_1 = __webpack_require__(48);
+const product_controller_1 = __webpack_require__(49);
+let ProductModule = class ProductModule {
+};
+exports.ProductModule = ProductModule;
+exports.ProductModule = ProductModule = __decorate([
+    (0, common_1.Module)({
+        controllers: [product_controller_1.ProductController],
+        providers: [product_service_1.ProductService],
+    })
+], ProductModule);
+
+
+/***/ }),
+/* 48 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ProductService = void 0;
+const common_1 = __webpack_require__(6);
+let ProductService = class ProductService {
+    create(createProductDto) {
+        return 'This action adds a new product';
+    }
+    findAll() {
+        return `This action returns all product`;
+    }
+    findOne(id) {
+        return `This action returns a #${id} product`;
+    }
+    update(id, updateProductDto) {
+        return `This action updates a #${id} product`;
+    }
+    remove(id) {
+        return `This action removes a #${id} product`;
+    }
+};
+exports.ProductService = ProductService;
+exports.ProductService = ProductService = __decorate([
+    (0, common_1.Injectable)()
+], ProductService);
+
+
+/***/ }),
+/* 49 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var _a, _b, _c;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ProductController = void 0;
+const common_1 = __webpack_require__(6);
+const product_service_1 = __webpack_require__(48);
+const create_product_dto_1 = __webpack_require__(50);
+const update_product_dto_1 = __webpack_require__(51);
+let ProductController = class ProductController {
+    constructor(productService) {
+        this.productService = productService;
+    }
+    create(createProductDto) {
+        return this.productService.create(createProductDto);
+    }
+    findAll() {
+        return this.productService.findAll();
+    }
+    findOne(id) {
+        return this.productService.findOne(+id);
+    }
+    update(id, updateProductDto) {
+        return this.productService.update(+id, updateProductDto);
+    }
+    remove(id) {
+        return this.productService.remove(+id);
+    }
+};
+exports.ProductController = ProductController;
+__decorate([
+    (0, common_1.Post)(),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [typeof (_b = typeof create_product_dto_1.CreateProductDto !== "undefined" && create_product_dto_1.CreateProductDto) === "function" ? _b : Object]),
+    __metadata("design:returntype", void 0)
+], ProductController.prototype, "create", null);
+__decorate([
+    (0, common_1.Get)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], ProductController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], ProductController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.Patch)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, typeof (_c = typeof update_product_dto_1.UpdateProductDto !== "undefined" && update_product_dto_1.UpdateProductDto) === "function" ? _c : Object]),
+    __metadata("design:returntype", void 0)
+], ProductController.prototype, "update", null);
+__decorate([
+    (0, common_1.Delete)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], ProductController.prototype, "remove", null);
+exports.ProductController = ProductController = __decorate([
+    (0, common_1.Controller)('product'),
+    __metadata("design:paramtypes", [typeof (_a = typeof product_service_1.ProductService !== "undefined" && product_service_1.ProductService) === "function" ? _a : Object])
+], ProductController);
+
+
+/***/ }),
+/* 50 */
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CreateProductDto = void 0;
+class CreateProductDto {
+}
+exports.CreateProductDto = CreateProductDto;
+
+
+/***/ }),
+/* 51 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.UpdateProductDto = void 0;
+const swagger_1 = __webpack_require__(28);
+const create_product_dto_1 = __webpack_require__(50);
+class UpdateProductDto extends (0, swagger_1.PartialType)(create_product_dto_1.CreateProductDto) {
+}
+exports.UpdateProductDto = UpdateProductDto;
+
+
+/***/ }),
+/* 52 */
 /***/ ((module) => {
 
 "use strict";
@@ -1587,7 +2243,7 @@ module.exports = require("helmet");
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("39df2f08392aececd8cc")
+/******/ 		__webpack_require__.h = () => ("649a97b54c4cf90cf453")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */

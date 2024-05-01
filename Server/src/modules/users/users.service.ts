@@ -119,6 +119,14 @@ export class UsersService {
     }
   }
 
+  async deleteAllUsers(): Promise<void> {
+    try {
+      await this.userRepository.delete({});
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to delete users');
+    }
+  }
+
   async updateSecretKey(userId, secret: string): Promise<UpdateResult> {
     return this.userRepository.update(
       { id: userId },

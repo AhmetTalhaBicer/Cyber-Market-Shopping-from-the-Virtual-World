@@ -134,4 +134,26 @@ export class UsersController {
       };
     }
   }
+
+  // Delete all users
+  @Delete()
+  @ApiOperation({ summary: 'Delete all users' })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'All users deleted successfully.',
+  })
+  async deleteAll(): Promise<{ success: boolean; message: string }> {
+    try {
+      await this.usersService.deleteAllUsers();
+      return {
+        success: true,
+        message: 'All users deleted successfully.',
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message,
+      };
+    }
+  }
 }

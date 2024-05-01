@@ -56,31 +56,55 @@ const KeyModal: React.FC<KeyModalProps> = ({ open, onClose, secretKey }) => {
           transform: "translate(-50%, -50%)",
           maxWidth: "80vw",
           bgcolor: "background.paper",
-          boxShadow: 24,
           p: 4,
           borderRadius: 4,
           textAlign: "center",
+          transition: "transform 0.3s ease-in-out",
+          boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
+          "&:hover": {
+            transform: "translate(-50%, -50%) scale(1.05)",
+          },
         }}
       >
-        <Typography variant="body2" sx={{ mb: 2, fontStyle: "italic" }}>
+        <Typography
+          variant="body2"
+          sx={{
+            mb: 2,
+            fontStyle: "italic",
+            fontWeight: "bold",
+            textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
+            background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+        >
           Use this key along with an application like Google Authenticator to
           generate your login codes.
         </Typography>
-        <Typography variant="h6" sx={{ mb: 2 }}>
+        <Typography variant="h6" sx={{ mb: 3, fontWeight: "bold" }}>
           Secret Key:
         </Typography>
         <Typography
           variant="body1"
-          sx={{ mb: 2, fontWeight: "bold", color: "primary.dark" }}
+          sx={{
+            mb: 2,
+            fontWeight: "bold",
+            color: "#002884",
+            fontSize: "1.2em",
+            border: "1px solid",
+            borderColor: "primary.dark",
+            padding: "10px",
+            borderRadius: "5px",
+          }}
         >
           {secretKey.secret}
         </Typography>
         <Button
           onClick={handleCopyKey}
-          variant="outlined"
+          variant="contained"
           color="primary"
           startIcon={<FileCopyIcon />}
-          sx={{ mb: 2 }}
+          sx={{ mb: 2, fontSize: "1.2em" }}
         >
           Copy
         </Button>
@@ -97,11 +121,17 @@ const KeyModal: React.FC<KeyModalProps> = ({ open, onClose, secretKey }) => {
           variant="contained"
           color="primary"
           fullWidth
-          sx={{ mb: 2 }}
+          sx={{ mb: 2, color: "#00ff00" }}
         >
           Validate
         </Button>
-        <Button onClick={onClose} variant="contained" color="primary" fullWidth>
+        <Button
+          onClick={onClose}
+          variant="contained"
+          color="primary"
+          fullWidth
+          sx={{ color: "#00ff00" }} // Apply styles directly
+        >
           Close
         </Button>
         {errorMessage && (
