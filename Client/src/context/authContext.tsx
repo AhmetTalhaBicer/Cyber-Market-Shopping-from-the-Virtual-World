@@ -129,27 +129,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     () => async (): Promise<void> => {
       try {
         const response = await postLoginGoogle();
-        const data = response.data;
-        console.log("data", data);
-        if (data.success) {
-          setIsAuthenticated(true);
-          console.log("Google login successful");
-          notify({
-            message: "Welcome! You have successfully logged in with Google.",
-            type: "success",
-          });
-        } else {
-          notify({
-            message: "An error occurred while logging in with Google",
-            type: "error",
-          });
-        }
+        const data = response.data.url;
+        window.location.href = data;
       } catch (error) {
         console.error("Google login error:", error);
         throw error;
       }
     },
-    [notify]
+    []
   );
   const authContextValue = useMemo(
     () => ({
