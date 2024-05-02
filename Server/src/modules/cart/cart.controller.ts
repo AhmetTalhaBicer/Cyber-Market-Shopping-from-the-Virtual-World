@@ -56,6 +56,8 @@ export class CartController {
     description: 'The product has been successfully added.',
   })
   @ApiResponse({ status: 404, description: 'Cart not found.' })
+  @UseFilters(new HttpExceptionFilter())
+  @UsePipes(new CartValidationPipe())
   async addItem(
     @Param('id', ParseIntPipe) cart_id: number,
     @Body() item: { productId: number; quantity: number },
@@ -80,6 +82,8 @@ export class CartController {
   @Get()
   @ApiOperation({ summary: 'Get all carts' })
   @ApiResponse({ status: 200, description: 'Return all carts.' })
+  @UseFilters(new HttpExceptionFilter())
+  @UsePipes(new CartValidationPipe())
   async findAll() {
     try {
       const carts = await this.cartService.findAll();
@@ -102,6 +106,8 @@ export class CartController {
   @ApiOperation({ summary: 'Get a cart by id' })
   @ApiResponse({ status: 200, description: 'Return the cart.' })
   @ApiResponse({ status: 404, description: 'Cart not found.' })
+  @UseFilters(new HttpExceptionFilter())
+  @UsePipes(new CartValidationPipe())
   async findOne(@Param('id') id: string) {
     try {
       const cart = await this.cartService.findById(+id);
@@ -127,6 +133,8 @@ export class CartController {
     description: 'The total price has been successfully calculated.',
   })
   @ApiResponse({ status: 404, description: 'Cart not found.' })
+  @UseFilters(new HttpExceptionFilter())
+  @UsePipes(new CartValidationPipe())
   async calculateTotal(@Param('id', ParseIntPipe) cart_id: number) {
     try {
       const calculatedTotal = await this.cartService.calculateTotal(cart_id);
@@ -152,6 +160,8 @@ export class CartController {
     description: 'The cart has been successfully updated.',
   })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
+  @UseFilters(new HttpExceptionFilter())
+  @UsePipes(new CartValidationPipe())
   async update(@Param('id') id: string, @Body() updateCartDto: UpdateCartDto) {
     try {
       const updatedCart = await this.cartService.update(+id, updateCartDto);
@@ -177,6 +187,8 @@ export class CartController {
     description: 'The cart has been successfully deleted.',
   })
   @ApiResponse({ status: 404, description: 'Cart not found.' })
+  @UseFilters(new HttpExceptionFilter())
+  @UsePipes(new CartValidationPipe())
   async remove(@Param('id') id: string) {
     try {
       await this.cartService.remove(+id);
@@ -200,6 +212,8 @@ export class CartController {
     description: 'The item has been successfully removed.',
   })
   @ApiResponse({ status: 404, description: 'Cart or product not found.' })
+  @UseFilters(new HttpExceptionFilter())
+  @UsePipes(new CartValidationPipe())
   async removeItem(
     @Param('id', ParseIntPipe) cart_id: number,
     @Param('itemId', ParseIntPipe) item_id: number,
@@ -228,6 +242,8 @@ export class CartController {
     description: 'The cart has been successfully cleared.',
   })
   @ApiResponse({ status: 404, description: 'Cart not found.' })
+  @UseFilters(new HttpExceptionFilter())
+  @UsePipes(new CartValidationPipe())
   async clear(@Param('id', ParseIntPipe) cart_id: number) {
     try {
       await this.cartService.clear(cart_id);

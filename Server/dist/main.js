@@ -2818,19 +2818,31 @@ exports.CartService = CartService = __decorate([
 ], CartService);
 let CartValidationPipe = class CartValidationPipe {
     transform(value) {
+        this.validateRequiredFields(value);
+        this.validateFieldTypes(value);
+        this.validateItemsArray(value);
+        return value;
+    }
+    validateRequiredFields(value) {
         const requiredFields = ['userId', 'items'];
-        const fieldTypes = {
-            userId: 'number',
-            items: 'object',
-        };
         requiredFields.forEach((field) => {
             if (!value[field]) {
                 throw new common_1.BadRequestException(`${field} is required`);
             }
+        });
+    }
+    validateFieldTypes(value) {
+        const fieldTypes = {
+            userId: 'number',
+            items: 'object',
+        };
+        for (const field in fieldTypes) {
             if (typeof value[field] !== fieldTypes[field]) {
                 throw new common_1.BadRequestException(`${field} must be a ${fieldTypes[field]}`);
             }
-        });
+        }
+    }
+    validateItemsArray(value) {
         if (!Array.isArray(value.items)) {
             throw new common_1.BadRequestException('Items must be an array');
         }
@@ -2840,7 +2852,6 @@ let CartValidationPipe = class CartValidationPipe {
                 throw new common_1.BadRequestException('Each item must have a productId and quantity of type number');
             }
         });
-        return value;
     }
 };
 exports.CartValidationPipe = CartValidationPipe;
@@ -3109,6 +3120,8 @@ __decorate([
         description: 'The product has been successfully added.',
     }),
     (0, swagger_1.ApiResponse)({ status: 404, description: 'Cart not found.' }),
+    (0, common_1.UseFilters)(new HttpExceptionFilter_1.HttpExceptionFilter()),
+    (0, common_1.UsePipes)(new cart_service_1.CartValidationPipe()),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -3119,6 +3132,8 @@ __decorate([
     (0, common_1.Get)(),
     (0, swagger_1.ApiOperation)({ summary: 'Get all carts' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Return all carts.' }),
+    (0, common_1.UseFilters)(new HttpExceptionFilter_1.HttpExceptionFilter()),
+    (0, common_1.UsePipes)(new cart_service_1.CartValidationPipe()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
@@ -3128,6 +3143,8 @@ __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Get a cart by id' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Return the cart.' }),
     (0, swagger_1.ApiResponse)({ status: 404, description: 'Cart not found.' }),
+    (0, common_1.UseFilters)(new HttpExceptionFilter_1.HttpExceptionFilter()),
+    (0, common_1.UsePipes)(new cart_service_1.CartValidationPipe()),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -3141,6 +3158,8 @@ __decorate([
         description: 'The total price has been successfully calculated.',
     }),
     (0, swagger_1.ApiResponse)({ status: 404, description: 'Cart not found.' }),
+    (0, common_1.UseFilters)(new HttpExceptionFilter_1.HttpExceptionFilter()),
+    (0, common_1.UsePipes)(new cart_service_1.CartValidationPipe()),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
@@ -3154,6 +3173,8 @@ __decorate([
         description: 'The cart has been successfully updated.',
     }),
     (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad Request.' }),
+    (0, common_1.UseFilters)(new HttpExceptionFilter_1.HttpExceptionFilter()),
+    (0, common_1.UsePipes)(new cart_service_1.CartValidationPipe()),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -3168,6 +3189,8 @@ __decorate([
         description: 'The cart has been successfully deleted.',
     }),
     (0, swagger_1.ApiResponse)({ status: 404, description: 'Cart not found.' }),
+    (0, common_1.UseFilters)(new HttpExceptionFilter_1.HttpExceptionFilter()),
+    (0, common_1.UsePipes)(new cart_service_1.CartValidationPipe()),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -3181,6 +3204,8 @@ __decorate([
         description: 'The item has been successfully removed.',
     }),
     (0, swagger_1.ApiResponse)({ status: 404, description: 'Cart or product not found.' }),
+    (0, common_1.UseFilters)(new HttpExceptionFilter_1.HttpExceptionFilter()),
+    (0, common_1.UsePipes)(new cart_service_1.CartValidationPipe()),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Param)('itemId', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
@@ -3195,6 +3220,8 @@ __decorate([
         description: 'The cart has been successfully cleared.',
     }),
     (0, swagger_1.ApiResponse)({ status: 404, description: 'Cart not found.' }),
+    (0, common_1.UseFilters)(new HttpExceptionFilter_1.HttpExceptionFilter()),
+    (0, common_1.UsePipes)(new cart_service_1.CartValidationPipe()),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
@@ -3332,7 +3359,7 @@ module.exports = require("helmet");
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-/******/ 		__webpack_require__.h = () => ("a27511adc402910cdc53")
+/******/ 		__webpack_require__.h = () => ("0020dd4e66d505028918")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */

@@ -154,29 +154,39 @@ export class CartService {
 @Injectable()
 export class CartValidationPipe implements PipeTransform {
   transform(value: any) {
+    this.validateRequiredFields(value);
+    this.validateFieldTypes(value);
+    this.validateItemsArray(value);
+    return value;
+  }
+
+  validateRequiredFields(value: any) {
     const requiredFields = ['userId', 'items'];
-
-    const fieldTypes = {
-      userId: 'number',
-      items: 'object',
-    };
-
     requiredFields.forEach((field) => {
       if (!value[field]) {
         throw new BadRequestException(`${field} is required`);
       }
+    });
+  }
 
+  validateFieldTypes(value: any) {
+    const fieldTypes = {
+      userId: 'number',
+      items: 'object',
+    };
+    for (const field in fieldTypes) {
       if (typeof value[field] !== fieldTypes[field]) {
         throw new BadRequestException(
           `${field} must be a ${fieldTypes[field]}`,
         );
       }
-    });
+    }
+  }
 
+  validateItemsArray(value: any) {
     if (!Array.isArray(value.items)) {
       throw new BadRequestException('Items must be an array');
     }
-
     value.items.forEach((item) => {
       if (
         typeof item.productId !== 'number' ||
@@ -187,7 +197,5 @@ export class CartValidationPipe implements PipeTransform {
         );
       }
     });
-
-    return value;
   }
 }
