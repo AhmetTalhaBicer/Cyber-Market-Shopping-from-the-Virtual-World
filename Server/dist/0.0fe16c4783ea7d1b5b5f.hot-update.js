@@ -3,7 +3,7 @@ exports.id = 0;
 exports.ids = null;
 exports.modules = {
 
-/***/ 48:
+/***/ 54:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -14,25 +14,28 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ProductModule = void 0;
+exports.CartModule = void 0;
 const common_1 = __webpack_require__(6);
-const product_service_1 = __webpack_require__(49);
-const product_controller_1 = __webpack_require__(50);
+const cart_service_1 = __webpack_require__(55);
+const cart_controller_1 = __webpack_require__(57);
+const cart_entity_1 = __webpack_require__(56);
+const typeorm_1 = __webpack_require__(11);
+const users_entity_1 = __webpack_require__(22);
+const users_service_1 = __webpack_require__(20);
 const product_entity_1 = __webpack_require__(43);
-const dist_1 = __webpack_require__(53);
+const product_service_1 = __webpack_require__(49);
 const category_entity_1 = __webpack_require__(42);
-const category_service_1 = __webpack_require__(41);
-let ProductModule = class ProductModule {
+let CartModule = class CartModule {
 };
-exports.ProductModule = ProductModule;
-exports.ProductModule = ProductModule = __decorate([
+exports.CartModule = CartModule;
+exports.CartModule = CartModule = __decorate([
     (0, common_1.Module)({
-        imports: [dist_1.TypeOrmModule.forFeature([product_entity_1.Product, category_entity_1.Category])],
-        controllers: [product_controller_1.ProductController],
-        providers: [product_service_1.ProductService, category_service_1.CategoryService],
-        exports: [product_service_1.ProductService],
+        imports: [typeorm_1.TypeOrmModule.forFeature([cart_entity_1.Cart, product_entity_1.Product, category_entity_1.Category, users_entity_1.Users])],
+        controllers: [cart_controller_1.CartController],
+        providers: [cart_service_1.CartService, product_service_1.ProductService, users_service_1.UsersService],
+        exports: [cart_service_1.CartService],
     })
-], ProductModule);
+], CartModule);
 
 
 /***/ })
@@ -42,7 +45,7 @@ exports.runtime =
 /******/ function(__webpack_require__) { // webpackRuntimeModules
 /******/ /* webpack/runtime/getFullHash */
 /******/ (() => {
-/******/ 	__webpack_require__.h = () => ("e0e919a072a6f27fbdd9")
+/******/ 	__webpack_require__.h = () => ("e48b9af55dedac621983")
 /******/ })();
 /******/ 
 /******/ }
