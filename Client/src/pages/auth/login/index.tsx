@@ -16,7 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
-import Box from "@mui/material/Box";
+import { Box } from "@mui/material";
 import googleButton from "../../../assets/button/google_Button.png";
 import MailIcon from "@mui/icons-material/Mail";
 import LockIcon from "@mui/icons-material/Lock";

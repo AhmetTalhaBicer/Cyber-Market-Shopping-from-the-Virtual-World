@@ -9,7 +9,7 @@ import { useAuth } from "../../../context/authContext";
 import { useNavigate } from "react-router-dom";
 import { Container, Grid, InputAdornment, ThemeProvider } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
-import Box from "@mui/material/Box";
+import { Box } from "@mui/material";
 import { Background, theme } from "../theme";
 import LockIcon from "@mui/icons-material/Lock";
 import { AccountCircle } from "@mui/icons-material";
