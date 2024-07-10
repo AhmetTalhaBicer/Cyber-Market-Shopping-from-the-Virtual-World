@@ -9,12 +9,14 @@ import { Repository } from 'typeorm';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { Category } from './entities/category.entity';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { ProductService } from '../product/product.service';
 
 @Injectable()
 export class CategoryService {
   constructor(
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
+    private productService: ProductService,
   ) {}
 
   // Create a new category
@@ -53,6 +55,9 @@ export class CategoryService {
 
   // Delete a category
   async remove(category_id: number) {
+    // Delete all products related to the category
+    await this.productService.removeByCategoryId(category_id);
+
     const deleteResult = await this.categoryRepository.delete(category_id);
     if (deleteResult.affected === 0) {
       throw new NotFoundException(`Category with id ${category_id} not found`);

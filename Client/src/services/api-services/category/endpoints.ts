@@ -7,13 +7,7 @@ import {
   Category_GetById,
   Category_Update,
 } from "./constants";
-import {
-  Category,
-  categoryCreateDTO,
-  categoryDeleteDTO,
-  categoryGetByIdDTO,
-  categoryUpdateDTO,
-} from "./types";
+import { Category, categoryCreateDTO, categoryUpdateDTO } from "./types";
 
 // create new category
 export const createCategory = async (data: categoryCreateDTO) => {
@@ -21,27 +15,24 @@ export const createCategory = async (data: categoryCreateDTO) => {
 };
 
 // get all categories
-export const getAllCategories = async (data: Category) => {
-  return http.get<ServerResponse<Category[]>>(Category_GetAll, {
-    params: data,
-  });
+export const getAllCategories = async () => {
+  return http.get<ServerResponse<Category[]>>(Category_GetAll);
 };
 
 // get category by id
-export const getCategoryById = async (data: categoryGetByIdDTO) => {
-  return http.get<ServerResponse<categoryGetByIdDTO>>(Category_GetById, {
-    params: data,
-  });
+export const getCategoryById = async (category_id: number) => {
+  return http.get<ServerResponse<number>>(Category_GetById(category_id));
 };
 
 // update category
-export const updateCategory = async (data: categoryUpdateDTO) => {
-  return http.patch(Category_Update, data);
+export const updateCategory = async (
+  category_id: number,
+  data: categoryUpdateDTO
+) => {
+  return http.patch(Category_Update(category_id), data);
 };
 
 // delete category
-export const deleteCategory = async (data: categoryDeleteDTO) => {
-  return http.delete(Category_Delete, {
-    params: data,
-  });
+export const deleteCategory = async (category_id: number) => {
+  return http.delete<ServerResponse<number>>(Category_Delete(category_id));
 };

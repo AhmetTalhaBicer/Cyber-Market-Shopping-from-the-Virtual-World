@@ -67,7 +67,7 @@ export class CartController {
       return {
         success: true,
         message: 'Item added successfully',
-        product: product,
+        result: product,
       };
     } catch (error) {
       return {
@@ -90,7 +90,7 @@ export class CartController {
       return {
         success: true,
         message: 'Carts retrieved successfully',
-        carts: carts,
+        result: carts,
       };
     } catch (error) {
       return {
@@ -114,7 +114,7 @@ export class CartController {
       return {
         success: true,
         message: 'Cart retrieved successfully',
-        cart: cart,
+        result: cart,
       };
     } catch (error) {
       return {
@@ -141,7 +141,7 @@ export class CartController {
       return {
         success: true,
         message: 'Total price calculated successfully',
-        total: calculatedTotal,
+        result: calculatedTotal,
       };
     } catch (error) {
       return {
@@ -168,7 +168,7 @@ export class CartController {
       return {
         success: true,
         message: 'Cart updated successfully',
-        cart: updatedCart,
+        result: updatedCart,
       };
     } catch (error) {
       return {
@@ -191,10 +191,11 @@ export class CartController {
   @UsePipes(new CartValidationPipe())
   async remove(@Param('id') id: string) {
     try {
-      await this.cartService.remove(+id);
+      const cart = await this.cartService.remove(+id);
       return {
         success: true,
         message: 'Cart deleted successfully',
+        result: cart,
       };
     } catch (error) {
       return {
@@ -223,7 +224,7 @@ export class CartController {
       return {
         success: true,
         message: 'Item removed successfully',
-        product: product,
+        result: product,
       };
     } catch (error) {
       return {
@@ -246,10 +247,11 @@ export class CartController {
   @UsePipes(new CartValidationPipe())
   async clear(@Param('id', ParseIntPipe) cart_id: number) {
     try {
-      await this.cartService.clear(cart_id);
+      const cart = await this.cartService.clear(cart_id);
       return {
         success: true,
         message: 'Cart cleared successfully',
+        result: cart,
       };
     } catch (error) {
       return {

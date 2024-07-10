@@ -10,12 +10,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { CategoryService } from '../category/category.service';
+import { Category } from '../category/entities/category.entity';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectRepository(Product)
     private productRepository: Repository<Product>,
+    @InjectRepository(Category)
     private categoryService: CategoryService,
   ) {}
 
@@ -76,6 +78,15 @@ export class ProductService {
       throw new NotFoundException(`Product with id ${product_id} not found`);
     }
     return deleteResult;
+  }
+
+  // Delete products by category id
+  async removeByCategoryId(category_id: number) {
+    return await this.productRepository
+      .createQueryBuilder()
+      .delete()
+      .where('category_id = :category_id', { category_id })
+      .execute();
   }
 
   //Delete all products

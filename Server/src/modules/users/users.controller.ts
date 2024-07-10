@@ -29,14 +29,14 @@ export class UsersController {
   async findAll(): Promise<{
     success: boolean;
     message: string;
-    users?: Users[];
+    result?: Users[];
   }> {
     try {
       const users = await this.usersService.findAll();
       return {
         success: true,
         message: 'All users retrieved successfully.',
-        users,
+        result: users,
       };
     } catch (error) {
       return {
@@ -60,13 +60,13 @@ export class UsersController {
   })
   async findOne(
     @Param('id') id: number,
-  ): Promise<{ success: boolean; message: string; user?: Users }> {
+  ): Promise<{ success: boolean; message: string; result?: Users[] }> {
     try {
       const user = await this.usersService.findById(id);
       return {
         success: true,
         message: 'User retrieved successfully.',
-        user,
+        result: [user],
       };
     } catch (error) {
       return {
@@ -91,13 +91,13 @@ export class UsersController {
   async update(
     @Param('id') id: number,
     @Body() updateUserDto: UpdateUserDto,
-  ): Promise<{ success: boolean; message: string; user?: Users }> {
+  ): Promise<{ success: boolean; message: string; result?: Users[] }> {
     try {
       const user = await this.usersService.updateUser(id, updateUserDto);
       return {
         success: true,
         message: 'User updated successfully.',
-        user,
+        result: [user],
       };
     } catch (error) {
       return {

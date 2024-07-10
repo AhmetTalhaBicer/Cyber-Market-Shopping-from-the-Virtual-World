@@ -37,7 +37,7 @@ export class ProductController {
       return {
         success: true,
         message: 'Product created successfully',
-        product: newProduct,
+        result: newProduct,
       };
     } catch (error) {
       return {
@@ -60,7 +60,7 @@ export class ProductController {
       return {
         success: true,
         message: 'All products retrieved successfully.',
-        product,
+        result: product,
       };
     } catch (error) {
       return {
@@ -83,7 +83,7 @@ export class ProductController {
       return {
         success: true,
         message: 'Product retrieved successfully.',
-        product,
+        result: product,
       };
     } catch (error) {
       return {
@@ -106,7 +106,7 @@ export class ProductController {
       return {
         success: true,
         message: 'Products retrieved successfully.',
-        products,
+        result: products,
       };
     } catch (error) {
       return {
@@ -138,7 +138,7 @@ export class ProductController {
       return {
         success: true,
         message: 'Product updated successfully.',
-        updatedProduct,
+        result: updatedProduct,
       };
     } catch (error) {
       return {
@@ -164,7 +164,7 @@ export class ProductController {
       return {
         success: true,
         message: 'Product deleted successfully.',
-        deletedProduct,
+        result: deletedProduct,
       };
     } catch (error) {
       return {
@@ -190,7 +190,7 @@ export class ProductController {
       return {
         success: true,
         message: 'All products deleted successfully.',
-        deletedProducts,
+        result: deletedProducts,
       };
     } catch (error) {
       return {

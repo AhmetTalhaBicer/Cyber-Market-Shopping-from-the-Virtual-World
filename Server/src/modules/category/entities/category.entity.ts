@@ -12,6 +12,8 @@ export class Category {
   @Column({ nullable: true })
   image_url: string;
 
-  @OneToMany(() => Product, (product) => product.category)
+  @OneToMany(() => Product, (product) => product.category, {
+    onDelete: 'CASCADE',
+  })
   products: Product[];
 }

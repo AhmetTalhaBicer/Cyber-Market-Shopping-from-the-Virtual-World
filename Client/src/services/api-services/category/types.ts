@@ -9,16 +9,7 @@ export interface Category {
   image_url: string;
 }
 
-export interface categoryGetByIdDTO {
-  category_id: number;
-}
-
 export interface categoryUpdateDTO {
-  category_id: number;
   name: string;
   image_url: string;
-}
-
-export interface categoryDeleteDTO {
-  category_id: number;
 }

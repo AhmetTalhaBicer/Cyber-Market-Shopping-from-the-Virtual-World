@@ -37,7 +37,7 @@ export class CategoryController {
       return {
         success: true,
         message: 'Category created successfully',
-        category: newCategory,
+        result: newCategory,
       };
     } catch (error) {
       return {
@@ -60,7 +60,7 @@ export class CategoryController {
       return {
         success: true,
         message: 'All categories retrieved successfully.',
-        categories,
+        result: categories,
       };
     } catch (error) {
       return {
@@ -90,7 +90,7 @@ export class CategoryController {
       return {
         success: true,
         message: 'Category retrieved successfully.',
-        category,
+        result: category,
       };
     } catch (error) {
       return {
@@ -127,7 +127,7 @@ export class CategoryController {
       return {
         success: true,
         message: 'Category updated successfully',
-        category: updatedCategory,
+        result: updatedCategory,
       };
     } catch (error) {
       return {
@@ -158,7 +158,7 @@ export class CategoryController {
       return {
         success: true,
         message: 'Category deleted successfully',
-        category: deletedCategory,
+        result: deletedCategory,
       };
     } catch (error) {
       return {
@@ -183,7 +183,7 @@ export class CategoryController {
       return {
         success: true,
         message: 'All categories deleted successfully',
-        categories: deletedCategories,
+        result: deletedCategories,
       };
     } catch (error) {
       return {
